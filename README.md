@@ -3,7 +3,7 @@ A repo for scripts that run on a local machine that will look out for systems of
 <br><br><br>
 
 # Dependencies
-### Make sure you have these Python modules installed by running `pip install requirements.txt`
+### Make sure you have these Python modules installed by running `pip install -r requirements.txt`
 - `matplotlib` - For plotting, of course
 - `paramiko` - For ssh connections
   
