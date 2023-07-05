@@ -30,6 +30,7 @@ ping_times = {domain: [] for domain in domains}
 lastEmailTime = 0
 
 def animate(i):    
+    global lastEmailTime
     # Even though this will make some requests slightly different times we need to 
     # plot them together
     now = datetime.now()
@@ -38,7 +39,7 @@ def animate(i):
     for domain in domains:
         
         # Run shell but store the output
-        os.system("ping -c 1 " + domain + " > ping_output.txt")        
+        os.system("ping " + domain + " > ping_output.txt")        
 
         with open("ping_output.txt", "r") as f:
             output = f.read()
