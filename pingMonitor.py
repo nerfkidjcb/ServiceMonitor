@@ -52,8 +52,7 @@ def animate(i):
             ping_times[domain].append(str(ping_time) + "|" + str(now))
             print(f"{domain} is up! Average ping time: {ping_time} ms")
 
-        else: # If the ping failed there won't be an average time
-            
+        else: # If the ping failed there won't be an average time            
 
             if config['email']['email_notify'].lower() == "true": 
 
@@ -94,5 +93,5 @@ def animate(i):
     # Rotate the x-axis labels for better readability
     plt.xticks(rotation=45, ha='right')
 
-ani = animation.FuncAnimation(fig, animate, interval=30000)
+ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
 plt.show()
