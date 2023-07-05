@@ -11,13 +11,26 @@ def monitor_remote_usage(hostname, port, username, password):
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname, port=port, username=username, password=password)
 
-    # Execute command to monitor CPU and RAM usage
-    command = "python monitor_script.py"  # Replace with the filename of your monitor script
-    stdin, stdout, stderr = ssh_client.exec_command(command)
+     # Execute the command remotely to get CPU usage
+    stdin, stdout, stderr = ssh_client.exec_command("top -bn1 | grep 'Cpu(s)'")
+    cpu_output = stdout.read().decode()
+    cpu_usage = cpu_output.split()[1] + " % CPU"
 
-    # Read and print the output
-    output = stdout.read().decode('utf-8')
-    print(output)
+    # Execute the command remotely to get RAM usage
+    stdin, stdout, stderr = ssh_client.exec_command("free -m | awk 'NR==2{print $3}' | tr -d '\n'") # Runs free command then parses the number in the 3rd column of the 2nd row (used Mem) then removes newline
+    ram_output = stdout.read().decode()
+    ram_used = ram_output
+
+
+    stdin, stdout, stderr = ssh_client.exec_command("free -m | awk 'NR==2{print $2}' | tr -d '\n'") 
+    ram_output = stdout.read().decode()
+    ram_total = ram_output
+
+    ram_usage = ram_used + "/" + ram_total + " MB RAM"
+    
+
+    # Return CPU and RAM usage
+    print(cpu_usage, ram_usage)
 
     # Close the SSH connection
     ssh_client.close()
