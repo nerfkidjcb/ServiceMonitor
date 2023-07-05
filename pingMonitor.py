@@ -53,11 +53,16 @@ def animate(i):
             print(f"{domain} is up! Average ping time: {ping_time} ms")
 
         else: # If the ping failed there won't be an average time
-            print(f"{domain} is down! Sending email...")
+            
 
-            if t.time() - lastEmailTime > 3600:
-                email.sendMail("Ping Failure", f"{domain} is unreachable!")
+            if config['email']['email_notify'].lower() == "true": 
+
+                print(f"{domain} is down! Attempting to send email...")
+                if t.time() - lastEmailTime > 3600:
+                    email.sendMail("Ping Failure", f"{domain} is unreachable!")
                 lastEmailTime = t.time()
+            else:
+                print(f"{domain} is down! Email notifications disabled.")
 
 
     # Append ping time to rolling list
