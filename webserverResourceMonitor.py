@@ -10,11 +10,15 @@ from datetime import datetime
 config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
 
-# Set up the plot
-fig = plt.figure()
-ax1 = fig.add_subplot(1, 1, 1)
-# Create a twin axes
-ax2 = ax1.twinx()
+# Are we in GUI mode
+makeGraphs = config['ui']['graphs'].lower() == "true"
+
+if makeGraphs:
+    # Set up the plot
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 1, 1)
+    # Create a twin axes
+    ax2 = ax1.twinx()
 
 cpu_usage_list = []
 ram_usage_list = []
@@ -67,38 +71,36 @@ def monitor_remote_usage(hostname, port, username, password):
         ram_usage_list.append(ram_used)
         time_list.append(now)
   
-    # Plot the data
-    #ax1.clear()
-    #ax2.clear()
+    
+    if makeGraphs:
+        # Set the x-axis locator and formatter
+        locator = mdates.MinuteLocator(interval=30)  # Display 30-minute intervals
+        formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
 
-    # Set the x-axis locator and formatter
-    locator = mdates.MinuteLocator(interval=30)  # Display 30-minute intervals
-    formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
+        # Plot the data
+        ax1.clear()
+        ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
+        ax1.set_xlabel("Time")
+        ax1.tick_params(axis="y", labelcolor="blue")
+        ax1.xaxis.set_major_locator(locator)
+        ax1.xaxis.set_major_formatter(formatter)
+        ax1.legend(loc="upper left")
 
-    # Plot the data
-    ax1.clear()
-    ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
-    ax1.set_xlabel("Time")
-    ax1.tick_params(axis="y", labelcolor="blue")
-    ax1.xaxis.set_major_locator(locator)
-    ax1.xaxis.set_major_formatter(formatter)
-    ax1.legend(loc="upper left")
+        # Plot the data on the second axes
+        ax2.clear()
+        ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
+        ax2.tick_params(axis="y", labelcolor="green")
+        ax2.xaxis.set_major_locator(locator)
+        ax2.set_xticklabels([])  # Hide x-axis labels for ax2
+        ax2.legend(loc="upper right")
 
-    # Plot the data on the second axes
-    ax2.clear()
-    ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
-    ax2.tick_params(axis="y", labelcolor="green")
-    ax2.xaxis.set_major_locator(locator)
-    ax2.set_xticklabels([])  # Hide x-axis labels for ax2
-    ax2.legend(loc="upper right")
+        # Set the x-axis label, y-axis label, and plot title
+        ax1.set_xlabel("Time")
+        ax1.set_ylabel("Resource Usage")
+        ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
 
-    # Set the x-axis label, y-axis label, and plot title
-    ax1.set_xlabel("Time")
-    ax1.set_ylabel("Resource Usage")
-    ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
-
-    # Rotate the x-axis labels for better readability
-    plt.xticks(rotation=45, ha='right')
+        # Rotate the x-axis labels for better readability
+        plt.xticks(rotation=45, ha='right')
 
 
 def animate(i):
@@ -112,6 +114,14 @@ if __name__ == '__main__':
 
     # Extract hostname and port from the remote_address
     remote_hostname, remote_port = remote_address.split(':')
-    ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
-    plt.show()
+    if makeGraphs:
+        print("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+        ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
+        plt.show()
+
+    else:
+        print("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+        while True:
+            monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
+            t.sleep(60)
     

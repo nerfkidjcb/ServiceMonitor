@@ -106,7 +106,7 @@ if makeGraphs:
     plt.show()
 
 else:
-    print("Graphs disabled. Running in console mode... (Check cfg.ini to enable graphs)")
+    print("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
     while True:
         animate(0)
         t.sleep(30)
