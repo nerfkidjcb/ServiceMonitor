@@ -6,7 +6,9 @@ import matplotlib.animation as animation
 import matplotlib.dates as mdates
 from datetime import datetime
 
-# Include logging script
+# Include my own modules
+import sys
+sys.path.append('./functions/')
 import customLogging as log
 
 # Parse cfg.ini file

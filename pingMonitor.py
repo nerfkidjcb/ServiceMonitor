@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 import matplotlib.dates as mdates
 import configparser
 
-# Include email script
+# Include my own modules
 import sys
 sys.path.append('./functions/')
 import sendEmail as email
