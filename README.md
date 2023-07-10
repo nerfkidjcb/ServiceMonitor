@@ -1,4 +1,4 @@
-# Service Monitor - Version 1.0!
+# Service Monitor - Version 1.2!
 A repo for scripts that run on a local machine that will look out for systems of your choosing.
 <br><br><br>
 
