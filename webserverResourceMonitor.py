@@ -10,6 +10,9 @@ from datetime import datetime
 config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
 
+# Are we in verbose mode
+verbose = config['ui']['verbose'].lower() == "true"
+
 # Are we in GUI mode
 makeGraphs = config['ui']['graphs'].lower() == "true"
 
@@ -52,8 +55,10 @@ def monitor_remote_usage(hostname, port, username, password):
     ram_usage = str(ram_used) + "/" + ram_total + " MB RAM"
     
     usage = str(cpu_usage) + " % CPU  |" + ram_usage
+
     # Return CPU and RAM usage
-    print(usage)
+    if verbose:
+        print(usage)
 
     # Close the SSH connection
     ssh_client.close()
@@ -114,6 +119,14 @@ if __name__ == '__main__':
 
     # Extract hostname and port from the remote_address
     remote_hostname, remote_port = remote_address.split(':')
+
+    if verbose:
+        print("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+
+    else :
+        print("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+        
+
     if makeGraphs:
         print("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
         ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
