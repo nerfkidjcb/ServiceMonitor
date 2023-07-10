@@ -40,5 +40,6 @@ Using the `paramiko` library to ssh and run resource monitoring commands on a ho
 
 <br><br>
 # Roadmap
+- Enable specification of intervals in `/cfg/cfg.ini`
 - Looking at monitoring the run queue of a host
 - Open to suggestions!
