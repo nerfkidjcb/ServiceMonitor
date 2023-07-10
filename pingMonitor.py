@@ -12,9 +12,18 @@ import sys
 sys.path.append('./functions/')
 import sendEmail as email
 
+# Include logging script
+import logging as log
+
 # Parse cfg.ini file
 config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
+
+# check it was read correctly
+if config['domains']['domain_list'] == "":
+    log.printError("No domains found in cfg.ini")
+    exit()
+    
 domains = config['domains']['domain_list'].split(",")
 
 # Are we in verbose mode
@@ -59,7 +68,7 @@ def animate(i):
             ping_times[domain].append(str(ping_time) + "|" + str(now))
 
             if verbose:
-                print(f"{domain} is up! Average ping time: {ping_time} ms")
+                log.printInfo(f"{domain} is up! Average ping time: {ping_time} ms")
 
         else: # If the ping failed there won't be an average time            
 
@@ -69,7 +78,7 @@ def animate(i):
             if config['email']['email_notify'].lower() == "true": 
 
                 if verbose:
-                    print(f"{domain} is down! Attempting to send email...")
+                    log.printWarn(f"{domain} is down! Attempting to send email...")
 
                 if t.time() - lastEmailTime > 3600:
                     email.sendMail("Ping Failure", f"{domain} is unreachable!")
@@ -77,7 +86,7 @@ def animate(i):
 
             else:
                 if verbose:
-                    print(f"{domain} is down! Email notifications disabled.")
+                    log.printWarn(f"{domain} is down! Email notifications disabled.")
 
 
     # Append ping time to rolling list
@@ -111,19 +120,19 @@ def animate(i):
         plt.xticks(rotation=45, ha='right')
 
 if verbose:
-    print("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+    log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
 
 else:
-    print("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
-    
+    log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+
     
 if makeGraphs:
-    print("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+    log.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
     ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
     plt.show()
 
 else:
-    print("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+    log.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
     while True:
         animate(0)
         t.sleep(30)

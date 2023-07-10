@@ -6,6 +6,9 @@ import matplotlib.animation as animation
 import matplotlib.dates as mdates
 from datetime import datetime
 
+# Include logging script
+import logging as log
+
 # Parse cfg.ini file
 config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
@@ -37,6 +40,11 @@ def monitor_remote_usage(hostname, port, username, password):
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname, port=port, username=username, password=password)
 
+    # Check if the connection was successful
+    if ssh_client.get_transport().is_active() == False:
+        log.printError("SSH connection failed, please check your credentials in cfg.ini")
+        exit()
+
      # Execute the command remotely to get CPU usage
     stdin, stdout, stderr = ssh_client.exec_command("top -bn1 | grep 'Cpu(s)'")
     cpu_output = stdout.read().decode()
@@ -58,7 +66,7 @@ def monitor_remote_usage(hostname, port, username, password):
 
     # Return CPU and RAM usage
     if verbose:
-        print(usage)
+        log.printInfo(usage)
 
     # Close the SSH connection
     ssh_client.close()
@@ -121,19 +129,19 @@ if __name__ == '__main__':
     remote_hostname, remote_port = remote_address.split(':')
 
     if verbose:
-        print("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+        log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
 
     else :
-        print("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
-        
+        log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+
 
     if makeGraphs:
-        print("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+        log.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
         ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
         plt.show()
 
     else:
-        print("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+        log.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
         while True:
             monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
             t.sleep(60)
