@@ -17,6 +17,9 @@ config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
 domains = config['domains']['domain_list'].split(",")
 
+# Are we in verbose mode
+verbose = config['ui']['verbose'].lower() == "true"
+
 # Are we in GUI mode
 makeGraphs = config['ui']['graphs'].lower() == "true"
 
@@ -54,20 +57,27 @@ def animate(i):
         if match:
             ping_time = float(match.group(1))
             ping_times[domain].append(str(ping_time) + "|" + str(now))
-            print(f"{domain} is up! Average ping time: {ping_time} ms")
+
+            if verbose:
+                print(f"{domain} is up! Average ping time: {ping_time} ms")
 
         else: # If the ping failed there won't be an average time            
 
             # Graph a 0 ping time to see drop outs
             ping_times[domain].append(0 + "|" + str(now))
+
             if config['email']['email_notify'].lower() == "true": 
 
-                print(f"{domain} is down! Attempting to send email...")
+                if verbose:
+                    print(f"{domain} is down! Attempting to send email...")
+
                 if t.time() - lastEmailTime > 3600:
                     email.sendMail("Ping Failure", f"{domain} is unreachable!")
                 lastEmailTime = t.time()
+
             else:
-                print(f"{domain} is down! Email notifications disabled.")
+                if verbose:
+                    print(f"{domain} is down! Email notifications disabled.")
 
 
     # Append ping time to rolling list
@@ -100,6 +110,13 @@ def animate(i):
         # Rotate the x-axis labels for better readability
         plt.xticks(rotation=45, ha='right')
 
+if verbose:
+    print("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+
+else:
+    print("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+    
+    
 if makeGraphs:
     print("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
     ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
