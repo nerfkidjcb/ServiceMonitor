@@ -13,7 +13,7 @@ sys.path.append('./functions/')
 import sendEmail as email
 
 # Include logging script
-import logging as log
+import customLogging as log
 
 # Parse cfg.ini file
 config = configparser.ConfigParser()
@@ -23,7 +23,7 @@ config.read('./cfg/cfg.ini')
 if config['domains']['domain_list'] == "":
     log.printError("No domains found in cfg.ini")
     exit()
-    
+
 domains = config['domains']['domain_list'].split(",")
 
 # Are we in verbose mode
@@ -32,10 +32,10 @@ verbose = config['ui']['verbose'].lower() == "true"
 # Are we in GUI mode
 makeGraphs = config['ui']['graphs'].lower() == "true"
 
-
-# Set up the plot
-fig = plt.figure()
-ax1 = fig.add_subplot(1, 1, 1)
+if makeGraphs:
+    # Set up the plot
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 1, 1)
 
 
 

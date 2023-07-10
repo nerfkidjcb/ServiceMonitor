@@ -7,7 +7,7 @@ import matplotlib.dates as mdates
 from datetime import datetime
 
 # Include logging script
-import logging as log
+import customLogging as log
 
 # Parse cfg.ini file
 config = configparser.ConfigParser()
