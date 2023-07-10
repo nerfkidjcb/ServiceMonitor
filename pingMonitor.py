@@ -17,6 +17,10 @@ config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
 domains = config['domains']['domain_list'].split(",")
 
+# Are we in GUI mode
+makeGraphs = config['ui']['graphs'].lower() == "true"
+
+
 # Set up the plot
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
@@ -72,28 +76,37 @@ def animate(i):
             ping_times[domain, now] = times[-1440:]
 
 
-    # Clear the current plot
-    ax1.clear()
+    if makeGraphs:
+        # Clear the current plot
+        ax1.clear()
 
-    for domain, times in ping_times.items():
-        # Plot the two columns in times against each other
-        dates = [datetime.strptime(time.split("|")[1], "%H:%M") for time in times]
-        ping_numbers = [float(time.split("|")[0]) for time in times]     
+        for domain, times in ping_times.items():
+            # Plot the two columns in times against each other
+            dates = [datetime.strptime(time.split("|")[1], "%H:%M") for time in times]
+            ping_numbers = [float(time.split("|")[0]) for time in times]     
 
-        ax1.plot(dates, ping_numbers, label=domain)
+            ax1.plot(dates, ping_numbers, label=domain)
 
-    # Set the x-axis locator and formatter
-    locator = mdates.MinuteLocator(interval=15)  # Display 15-minute intervals
-    formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
-    ax1.xaxis.set_major_locator(locator)
-    ax1.xaxis.set_major_formatter(formatter)
+        # Set the x-axis locator and formatter
+        locator = mdates.MinuteLocator(interval=15)  # Display 15-minute intervals
+        formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
+        ax1.xaxis.set_major_locator(locator)
+        ax1.xaxis.set_major_formatter(formatter)
 
-    ax1.set_xlabel("Time")
-    ax1.set_ylabel("Ping Time (ms)")
-    ax1.legend()
+        ax1.set_xlabel("Time")
+        ax1.set_ylabel("Ping Time (ms)")
+        ax1.legend()
 
-    # Rotate the x-axis labels for better readability
-    plt.xticks(rotation=45, ha='right')
+        # Rotate the x-axis labels for better readability
+        plt.xticks(rotation=45, ha='right')
 
-ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
-plt.show()
+if makeGraphs:
+    print("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+    ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
+    plt.show()
+
+else:
+    print("Graphs disabled. Running in console mode... (Check cfg.ini to enable graphs)")
+    while True:
+        animate(0)
+        t.sleep(30)
