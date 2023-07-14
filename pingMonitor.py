@@ -177,11 +177,13 @@ else:
     
 if makeGraphs:
     log.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+    print()
     ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
     plt.show()
 
 else:
     log.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+    print()
     while True:
         animate(0)
         t.sleep(30)
