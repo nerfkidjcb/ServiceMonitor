@@ -38,13 +38,21 @@ def monitor_remote_usage(hostname, port, username, password):
     now = now.strftime("%H:%M")
 
     # Establish SSH connection
+    if verbose:
+        log.printInfo("Attempting connection to host")
+        
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh_client.connect(hostname, port=port, username=username, password=password, timeout=20)
+    
+    try:
+        ssh_client.connect(hostname, port=port, username=username, password=password, timeout=20)
+    except TimeoutError as e:
+        log.printError("Connection timed out: " + e)
+        
 
     # Check if the connection was successful
     if ssh_client.get_transport().is_active() == False:
-        log.printError("SSH connection failed, please check your credentials in cfg.ini")
+        log.printError("SSH connection failed, please check your credentials in cfg.ini and your host's settings")
         exit()
 
      # Execute the command remotely to get CPU usage
