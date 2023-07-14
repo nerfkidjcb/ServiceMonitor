@@ -46,7 +46,10 @@ def monitor_remote_usage(hostname, port, username, password):
     
     try:
         ssh_client.connect(hostname, port=port, username=username, password=password, timeout=20)
+        
     except TimeoutError as e:
+        
+        log.printInfo("Arborting, please check your SSH credentials in cfg.ini and your host's configuration")
         log.printError("Connection timed out: " + str(e))
         exit()
         
