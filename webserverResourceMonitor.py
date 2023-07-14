@@ -40,7 +40,7 @@ def monitor_remote_usage(hostname, port, username, password):
     # Establish SSH connection
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh_client.connect(hostname, port=port, username=username, password=password)
+    ssh_client.connect(hostname, port=port, username=username, password=password, timeout=20)
 
     # Check if the connection was successful
     if ssh_client.get_transport().is_active() == False:
