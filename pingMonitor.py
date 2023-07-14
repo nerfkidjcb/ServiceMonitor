@@ -149,7 +149,7 @@ print("                                                                         
 print()
 print("Welcome to the Ping Monitor tool!")
 print("Initialising...")
-sleep(1)
+t.sleep(1)
 print("\n \n \n")
 
 if verbose:
