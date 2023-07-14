@@ -1,4 +1,5 @@
 import os
+import platform
 import re
 import time as t
 from datetime import datetime
@@ -127,7 +128,25 @@ def animate(i):
         plt.xticks(rotation=45, ha='right')
 
 
-### Entrypont
+### Entrypoint
+print(" ___________________________________________________________________________")
+print("/                                                                           \ ")
+print("|   ____                  _            __  __             _ _               |")
+print("|  / ___|  ___ _ ____   _(_) ___ ___  |  \/  | ___  _ __ (_) |_ ___  _ __   |")
+print("|  \___ \ / _ \ '__\ \ / / |/ __/ _ \ | |\/| |/ _ \| '_ \| | __/ _ \| '__|  |")
+print("|   ___) |  __/ |   \ V /| | (_|  __/ | |  | | (_) | | | | | || (_) | |     |")
+print("|  |____/ \___|_|    \_/ |_|\___\___| |_|  |_|\___/|_| |_|_|\__\___/|_|     |")
+print("|                                                                           |")
+print("\________________________________________________________________________ '\ ")
+print("                                                                     ()    \\ ")
+print("                                                                       O    \\  .")
+print("                                                                         o  |\\/|")
+print("                                                                            / ' '\ ")
+print("                                                                            . .   . ")
+print("                                                                           /    ) |")
+print("                                                                          '  _.'  |")
+print("                                                                          '-'/    \ ")
+print("\n \n \n")
 
 if verbose:
     log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
