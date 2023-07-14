@@ -48,6 +48,7 @@ def monitor_remote_usage(hostname, port, username, password):
         ssh_client.connect(hostname, port=port, username=username, password=password, timeout=20)
     except TimeoutError as e:
         log.printError("Connection timed out: " + str(e))
+        exit()
         
 
     # Check if the connection was successful
