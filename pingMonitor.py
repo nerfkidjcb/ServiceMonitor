@@ -87,8 +87,13 @@ def animate(i):
                 output = f.read()
     
             # Parse the output to get the average ping time
-            match = re.search(r"Average = (\d+)ms", output)
+            res = re.search(r"Average = (\d+)ms", output)
+            if res:
+                ping_time = res.group(1)
 
+            else:
+                ping_time = False
+                
         else:
             # We on linux
             command = f"ping -c 4 {domain}"
@@ -100,13 +105,12 @@ def animate(i):
 
             if len(ping_times) != 0:              
                 # Calculate average time
-                match = int(sum(float(time) for time in ping_times) / len(ping_times))
+                ping_time = int(sum(float(time) for time in ping_times) / len(ping_times))
                 
             else:
-                match = False
+                ping_time = False
 
-        if match:
-            ping_time = float(match.group(1))
+        if ping_time:
             ping_times[domain].append(str(ping_time) + "|" + str(now))
 
             if verbose:
