@@ -49,8 +49,8 @@ def monitor_remote_usage(hostname, port, username, password):
         
     except TimeoutError as e:
         
-        log.printInfo("Arborting, please check your SSH credentials in cfg.ini and your host's configuration")
         log.printError("Connection timed out: " + str(e))
+        log.printError("Arborting, please check your SSH credentials in cfg.ini and your host's configuration")
         exit()
         
 
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     print("Welcome to the Resource Monitor tool!")
     print("Initialising...")
     t.sleep(1)
-    print("\n \n \n")
+    print("\n \n")
     
     remote_address = config['ssh']['ssh_address']
     remote_username = config['ssh']['ssh_username']
