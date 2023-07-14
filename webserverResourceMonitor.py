@@ -39,7 +39,7 @@ def monitor_remote_usage(hostname, port, username, password):
 
     # Establish SSH connection
     if verbose:
-        log.printInfo("Attempting connection to host")
+        log.printInfo("Attempting connection to host...")
         
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -131,6 +131,31 @@ def animate(i):
 
 
 if __name__ == '__main__':
+
+    ### Entrypoint
+    print(" ___________________________________________________________________________")
+    print("/                                                                           \ ")
+    print("|   ____                  _            __  __             _ _               |")
+    print("|  / ___|  ___ _ ____   _(_) ___ ___  |  \/  | ___  _ __ (_) |_ ___  _ __   |")
+    print("|  \___ \ / _ \ '__\ \ / / |/ __/ _ \ | |\/| |/ _ \| '_ \| | __/ _ \| '__|  |")
+    print("|   ___) |  __/ |   \ V /| | (_|  __/ | |  | | (_) | | | | | || (_) | |     |")
+    print("|  |____/ \___|_|    \_/ |_|\___\___| |_|  |_|\___/|_| |_|_|\__\___/|_|     |")
+    print("|                                                                           |")
+    print("\________________________________________________________________________ '\ ")
+    print("                                                                     ()    \\ ")
+    print("                                                                       O    \\  .")
+    print("                                                                         o  |\\/|")
+    print("                                                                            / ' '\ ")
+    print("                                                                            . .   . ")
+    print("                                                                           /    ) |")
+    print("                                                                          '  _.'  |")
+    print("                                                                          '-'/    \ ")
+    print()
+    print("Welcome to the Resource Monitor tool!")
+    print("Initialising...")
+    t.sleep(1)
+    print("\n \n \n")
+    
     remote_address = config['ssh']['ssh_address']
     remote_username = config['ssh']['ssh_username']
     remote_password = config['ssh']['ssh_password']
