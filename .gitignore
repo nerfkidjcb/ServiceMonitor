@@ -2,3 +2,4 @@
 cfg/cfg.ini
 *.pyc
 ping_output.txt
+win_ping_output.txt

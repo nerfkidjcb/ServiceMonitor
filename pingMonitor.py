@@ -93,7 +93,7 @@ def animate(i):
 
             else:
                 ping_time = False
-                
+
         else:
             # We on linux
             command = f"ping -c 4 {domain}"
@@ -101,11 +101,11 @@ def animate(i):
 
             # Extract ping times using regular expression
             time_pattern = r"time=([\d.]+)"
-            ping_times = re.findall(time_pattern, ping_output)
+            res_ping_times = re.findall(time_pattern, ping_output)
 
-            if len(ping_times) != 0:              
+            if len(res_ping_times) != 0:              
                 # Calculate average time
-                ping_time = int(sum(float(time) for time in ping_times) / len(ping_times))
+                ping_time = int(sum(float(time) for time in res_ping_times) / len(ping_times))
                 
             else:
                 ping_time = False
