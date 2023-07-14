@@ -146,6 +146,10 @@ print("                                                                         
 print("                                                                           /    ) |")
 print("                                                                          '  _.'  |")
 print("                                                                          '-'/    \ ")
+print()
+print("Welcome to the Ping Monitor tool!")
+print("Initialising...")
+sleep(1)
 print("\n \n \n")
 
 if verbose:
