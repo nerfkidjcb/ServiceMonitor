@@ -20,6 +20,7 @@ print()
 print("Welcome to the Ping Monitor tool!")
 print("Initialising...")
 
+from math import fabs
 import os
 import platform
 import re
@@ -80,9 +81,9 @@ def animate(i):
         if platform.system().lower() == "windows":
     
             # Run shell but store the output
-            os.system("ping " + domain + " > ping_output.txt")        
+            os.system("ping " + domain + " > win_ping_output.txt")        
     
-            with open("ping_output.txt", "r") as f:
+            with open("win_ping_output.txt", "r") as f:
                 output = f.read()
     
             # Parse the output to get the average ping time
@@ -90,8 +91,19 @@ def animate(i):
 
         else:
             # We on linux
-            log.printWarn("Ping functionality on linux not yet properly implemented! Exiting...")
-            exit()
+            command = f"ping -c 4 {domain}"
+            ping_output = os.popen(command).read()
+
+            # Extract ping times using regular expression
+            time_pattern = r"time=([\d.]+)"
+            ping_times = re.findall(time_pattern, ping_output)
+
+            if len(ping_times) != 0:              
+                # Calculate average time
+                match = sum(float(time) for time in ping_times) / len(ping_times)
+                
+            else:
+                match = False
 
         if match:
             ping_time = float(match.group(1))
