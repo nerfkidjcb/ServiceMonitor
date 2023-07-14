@@ -54,14 +54,21 @@ def animate(i):
 
     for domain in domains:
         
-        # Run shell but store the output
-        os.system("ping " + domain + " > ping_output.txt")        
+        if platform.system().lower() == "windows":
+    
+            # Run shell but store the output
+            os.system("ping " + domain + " > ping_output.txt")        
+    
+            with open("ping_output.txt", "r") as f:
+                output = f.read()
+    
+            # Parse the output to get the average ping time
+            match = re.search(r"Average = (\d+)ms", output)
 
-        with open("ping_output.txt", "r") as f:
-            output = f.read()
-
-        # Parse the output to get the average ping time
-        match = re.search(r"Average = (\d+)ms", output)
+        else:
+            # We on linux
+            log.printWarn("Ping functionality on linux not yet properly implemented! Exiting...")
+            exit()
 
         if match:
             ping_time = float(match.group(1))
@@ -118,6 +125,9 @@ def animate(i):
 
         # Rotate the x-axis labels for better readability
         plt.xticks(rotation=45, ha='right')
+
+
+### Entrypont
 
 if verbose:
     log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
