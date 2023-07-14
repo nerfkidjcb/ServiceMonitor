@@ -158,7 +158,6 @@ if __name__ == '__main__':
     print("Welcome to the Resource Monitor tool!")
     print("Initialising...")
     t.sleep(1)
-    print("\n \n")
     
     remote_address = config['ssh']['ssh_address']
     remote_username = config['ssh']['ssh_username']
@@ -166,6 +165,8 @@ if __name__ == '__main__':
 
     # Extract hostname and port from the remote_address
     remote_hostname, remote_port = remote_address.split(':')
+    
+    print("Done! \n \n")
 
     if verbose:
         log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
