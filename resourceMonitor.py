@@ -50,7 +50,7 @@ def monitor_remote_usage(hostname, port, username, password):
     except TimeoutError as e:
         
         log.printError("Connection timed out: " + str(e))
-        log.printError("Arborting, please check your SSH credentials in cfg.ini and your host's configuration")
+        log.printError("Aborting, please check your SSH credentials in cfg.ini and your host's configuration")
         exit()
         
 
