@@ -47,7 +47,7 @@ def monitor_remote_usage(hostname, port, username, password):
     try:
         ssh_client.connect(hostname, port=port, username=username, password=password, timeout=20)
     except TimeoutError as e:
-        log.printError("Connection timed out: " + e)
+        log.printError("Connection timed out: " + str(e))
         
 
     # Check if the connection was successful
@@ -147,11 +147,13 @@ if __name__ == '__main__':
 
     if makeGraphs:
         log.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+        print()
         ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
         plt.show()
 
     else:
         log.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+        print()
         while True:
             monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
             t.sleep(60)
