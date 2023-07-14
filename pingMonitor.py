@@ -73,7 +73,7 @@ def animate(i):
         else: # If the ping failed there won't be an average time            
 
             # Graph a 0 ping time to see drop outs
-            ping_times[domain].append(0 + "|" + str(now))
+            ping_times[domain].append(str(0) + "|" + str(now))
 
             if config['email']['email_notify'].lower() == "true": 
 
