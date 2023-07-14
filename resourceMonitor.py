@@ -1,3 +1,25 @@
+### Welcome
+print(" ___________________________________________________________________________")
+print("/                                                                           \ ")
+print("|   ____                  _            __  __             _ _               |")
+print("|  / ___|  ___ _ ____   _(_) ___ ___  |  \/  | ___  _ __ (_) |_ ___  _ __   |")
+print("|  \___ \ / _ \ '__\ \ / / |/ __/ _ \ | |\/| |/ _ \| '_ \| | __/ _ \| '__|  |")
+print("|   ___) |  __/ |   \ V /| | (_|  __/ | |  | | (_) | | | | | || (_) | |     |")
+print("|  |____/ \___|_|    \_/ |_|\___\___| |_|  |_|\___/|_| |_|_|\__\___/|_|     |")
+print("|                                                                           |")
+print("\________________________________________________________________________ '\ ")
+print("                                                                     ()    \\ ")
+print("                                                                       O    \\  .")
+print("                                                                         o  |\\/|")
+print("                                                                            / ' '\ ")
+print("                                                                            . .   . ")
+print("                                                                           /    ) |")
+print("                                                                          '  _.'  |")
+print("                                                                          '-'/    \ ")
+print()
+print("Welcome to the Resource Monitor tool!")
+print("Initialising...")
+
 import paramiko
 import time as t
 import configparser
@@ -134,30 +156,7 @@ def animate(i):
     monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
 
 
-if __name__ == '__main__':
-
-    ### Entrypoint
-    print(" ___________________________________________________________________________")
-    print("/                                                                           \ ")
-    print("|   ____                  _            __  __             _ _               |")
-    print("|  / ___|  ___ _ ____   _(_) ___ ___  |  \/  | ___  _ __ (_) |_ ___  _ __   |")
-    print("|  \___ \ / _ \ '__\ \ / / |/ __/ _ \ | |\/| |/ _ \| '_ \| | __/ _ \| '__|  |")
-    print("|   ___) |  __/ |   \ V /| | (_|  __/ | |  | | (_) | | | | | || (_) | |     |")
-    print("|  |____/ \___|_|    \_/ |_|\___\___| |_|  |_|\___/|_| |_|_|\__\___/|_|     |")
-    print("|                                                                           |")
-    print("\________________________________________________________________________ '\ ")
-    print("                                                                     ()    \\ ")
-    print("                                                                       O    \\  .")
-    print("                                                                         o  |\\/|")
-    print("                                                                            / ' '\ ")
-    print("                                                                            . .   . ")
-    print("                                                                           /    ) |")
-    print("                                                                          '  _.'  |")
-    print("                                                                          '-'/    \ ")
-    print()
-    print("Welcome to the Resource Monitor tool!")
-    print("Initialising...")
-    t.sleep(1)
+if __name__ == '__main__':    
     
     remote_address = config['ssh']['ssh_address']
     remote_username = config['ssh']['ssh_username']
