@@ -17,7 +17,7 @@ print("                                                                         
 print("                                                                          '  _.'  |")
 print("                                                                          '-'/    \ ")
 print()
-print("Welcome to the Ping Monitor tool!")
+print("Welcome to the Ping Monitor tool! Please make sure you are running the latest version of the tool from GitHub using the command 'git pull'")
 print("Initialising...")
 
 import os
