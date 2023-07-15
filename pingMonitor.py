@@ -20,7 +20,6 @@ print()
 print("Welcome to the Ping Monitor tool!")
 print("Initialising...")
 
-from math import fabs
 import os
 import platform
 import re
