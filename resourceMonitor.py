@@ -32,6 +32,9 @@ from datetime import datetime
 import sys
 sys.path.append('./functions/')
 import customLogging as log
+import functions as util
+
+util.checkCfg()
 
 # Parse cfg.ini file
 config = configparser.ConfigParser()
