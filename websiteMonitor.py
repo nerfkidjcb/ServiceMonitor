@@ -85,7 +85,7 @@ def monitor_websites():
             wget = ""
 
         # check if the website returned any html
-        if not re.search("<html", wget) and wget != "":
+        if (not re.search("<html", wget)) or wget == "":
             if emailNotify:
                 if t.time() - lastEmailTime > 3600:
                     if verbose:
