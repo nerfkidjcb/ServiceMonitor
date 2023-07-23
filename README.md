@@ -31,12 +31,17 @@ Other configuration options are commented in the example file
 
 ## Scripts
 ### Script 1: `monitorPing.py` [FUNCTIONING]
-Indefinitely pings domains within the `domains_list` in config and graphs the ping for each domain in real time. Upon a missing response, a notification email is sent
+Indefinitely pings domains/hosts within the `domains_list` in config and graphs the ping for each domain in real time. Upon a missing response, a notification email is sent. Emails, graphs and console outputs can be configured. 
 
 <br>
 
-### Script 2: `webserverResourceMonitor.py` [FUNCTIONING]
+### Script 2: `resourceMonitor.py` [FUNCTIONING]
 Using the `paramiko` library to ssh and run resource monitoring commands on a host. This script goes on to graph the CPU and RAM usage in real time for the chosen host
+
+<br>
+
+### Script 3: `websiteMonitor.py` [LINUX]
+Using `wget`, will check that the configured domains/hosts are serving some html content. Similar to pingMonitor, but will check for a web page response, as opposed to a ping from the name server.
 
 <br><br>
 # Roadmap
