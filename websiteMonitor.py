@@ -57,9 +57,51 @@ verbose = config['ui']['verbose'].lower() == "true"
 # Is email enabled
 emailNotify = config['email']['email_notify'].lower() == "true"
 
+# Keep track of the last time we sent an email so we don't spam
+lastEmailTime = 0
 
-def monitor_websites():
-    return
+
+def monitor_websites():  
+
+    for website in websites:
+        # Remove any whitespace
+        website = website.strip()
+
+        if verbose:
+            log.printInfo(f"Checking {website}...")
+
+        # wget the website
+        wget = os.popen(f"wget {website} -O -").read()
+
+        # check if the website returned any html
+        if not re.search("<html", wget):
+            if emailNotify:
+                if t.time() - lastEmailTime > 3600:
+                    if verbose:
+                        log.printWarn(f"{website} is down! Attempting to send email...")
+
+                    res = email.sendMail("Website Failure", f"{website} is unreachable!")
+
+                    if res:
+                        if verbose:
+                            log.printInfo("Email sent successfully!")
+                        lastEmailTime = t.time()
+
+                    elif verbose:
+                        log.printError("Email failed to send! Please check your email settings in cfg.ini")
+
+                elif verbose:
+                    log.printWarn("Email notifications are on cooldown!")
+
+                
+
+            elif verbose:
+                log.printWarn(f"{website} is down! Email notifications disabled.")
+
+        else:
+            if verbose:
+                log.printInfo(f"{website} is up and serving content!")
+                
 
 
 print("Done! \n \n ")
