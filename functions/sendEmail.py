@@ -14,13 +14,15 @@ def sendMail(subject, body):
   message = f"Subject: {subject}\n\n{body}"
   host= config['email']['email_host']
 
-  server = smtplib.SMTP(host, 587)
-  server.starttls()
-  server.login(sender, password)
-  res = server.sendmail(sender, recipient, message)
+  try:
+    server = smtplib.SMTP(host)
+    server.ehlo()
+    server.starttls()
+    server.login(sender, password)
+    server.sendmail(sender, recipient, message)
+    server.close()
+    return True
   
-  if res != {}:
-    print(f"Email failed to send. Error: {res}")
-
-  server.quit()
+  except:
+    return False
 

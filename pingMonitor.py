@@ -134,12 +134,20 @@ def animate(i):
                     log.printWarn(f"{domain} is down! Attempting to send email...")
 
                 if t.time() - lastEmailTime > 3600:
-                    email.sendMail("Ping Failure", f"{domain} is unreachable!")
-                    lastEmailTime = t.time()
+                    res = email.sendMail("Ping Failure", f"{domain} is unreachable!")
+                    
+                    if res:
+                        if verbose:
+                            log.printInfo("Email sent successfully!")
+                        lastEmailTime = t.time()
+                    
+                    elif verbose:
+                        log.printError("Email failed to send! Please check your email settings in cfg.ini")
+
+                    
                 
-                else:
-                    if verbose:
-                        log.printWarn("Email notifications are on cooldown!")
+                elif verbose:
+                    log.printWarn("Email notifications are on cooldown!")
 
             else:
                 if verbose:
