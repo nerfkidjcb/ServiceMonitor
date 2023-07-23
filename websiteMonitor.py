@@ -45,7 +45,7 @@ util.checkCfg()
 config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
 
-# check it was read correctly
+# Check it was read correctly
 if config['websites']['website_list'] == "":
     log.printError("No websites found in cfg.ini")
     exit()
@@ -58,21 +58,23 @@ verbose = config['ui']['verbose'].lower() == "true"
 # Is email enabled
 emailNotify = config['email']['email_notify'].lower() == "true"
 
-# Keep track of the last time we sent an email so we don't spam
-lastEmailTime = 0
+# Remove any whitespace and update the list elements
+for i, website in enumerate(websites):
+    websites[i] = website.strip()
+
+    # If there's no http:// or https://, add https://
+    if not re.search("http", websites[i]):
+        websites[i] = f"https://{websites[i]}"
+        print(websites[i])
+
+# Keep track of the last time we sent an email per website
+lastEmailSites = {website: [] for website in websites}
 
 
 def monitor_websites():  
     global lastEmailTime
 
-    for website in websites:
-        # Remove any whitespace
-        website = website.strip()
-
-        # If theres no http:// or https://, add it
-        if not (re.search("https", website) or re.search("http", website)):
-            website = "https://" + website
-        
+    for website in websites:     
 
         if verbose:
             log.printInfo(f"Checking {website}...")
@@ -88,7 +90,7 @@ def monitor_websites():
         if (not re.search("<html", wget)) or wget == "":
 
             if emailNotify:
-                if t.time() - lastEmailTime > 3600:
+                if (lastEmailSites[website] == []) or (t.time() - lastEmailSites[website] > 3600):
                     if verbose:
                         log.printWarn(f"{website} is not serving html! Attempting to send email...")
 
@@ -97,13 +99,13 @@ def monitor_websites():
                     if res:
                         if verbose:
                             log.printInfo("Email sent successfully!")
-                        lastEmailTime = t.time()
+                        lastEmailSites[website] = t.time()
 
                     elif verbose:
                         log.printError("Email failed to send! Please check your email settings in cfg.ini")
 
                 elif verbose:
-                    log.printWarn(f"{website} not serving content, but email notifications are on cooldown!")
+                    log.printWarn(f"{website} not serving content, and email notifications for it are on cooldown!")
                 
 
             elif verbose:
