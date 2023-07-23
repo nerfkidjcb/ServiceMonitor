@@ -42,12 +42,11 @@ Using the `paramiko` library to ssh and run resource monitoring commands on a ho
 <br>
 
 ### Script 3: `websiteMonitor.py` [FUNCTIONING]
-Using the `requests` library, this script will check that the configured domains/hosts are serving some html content. Similar to pingMonitor, but will check for a web page response, as opposed to a ping from the name server.
+Using the `requests` library, this script will check that the configured domains/hosts are serving some html content. Similar to pingMonitor, but will check for a web page response, as opposed to a ping from the name server. Now only silences duplicate emails from the same website in `websiteMonitor.py` so that if multiple websites go down, more than one of them gets emailed
 
 <br><br>
 # Roadmap
 - Enable specification of intervals in `/cfg/cfg.ini`
-- Only silence duplicate emails from the same website in `websiteMonitor.py` so that if multiple websites go down, more than one of them gets emailed
 - Configure email notification for a service going back up after being flagged as down
 - Looking at monitoring the run queue of a host
 - Open to suggestions!
