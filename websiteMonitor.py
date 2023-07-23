@@ -89,7 +89,7 @@ def monitor_websites():
             if emailNotify:
                 if t.time() - lastEmailTime > 3600:
                     if verbose:
-                        log.printWarn(f"{website} is not servings html! Attempting to send email...")
+                        log.printWarn(f"{website} is not serving html! Attempting to send email...")
 
                     res = email.sendMail("Website Failure", f"{website} is unreachable!")
 
