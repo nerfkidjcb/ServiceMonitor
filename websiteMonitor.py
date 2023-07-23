@@ -25,6 +25,7 @@ print()
 import os
 import platform
 import re
+import requests
 import time as t
 from datetime import datetime
 import configparser
@@ -67,18 +68,28 @@ def monitor_websites():
         # Remove any whitespace
         website = website.strip()
 
+        # If theres no http:// or https://, add it
+        if not (re.search("https", website) or re.search("http", website)):
+            website = "https://" + website
+        
+
         if verbose:
             log.printInfo(f"Checking {website}...")
 
-        # wget the website
-        wget = os.popen(f"wget {website} -O -").read()
+        # request the website
+        try:
+            wget = requests.get(website).text
+        
+        except:
+            log.printError(f"Failed to connect to {website}! Skipping...")
+            wget = ""
 
         # check if the website returned any html
-        if not re.search("<html", wget):
+        if not re.search("<html", wget) and wget != "":
             if emailNotify:
                 if t.time() - lastEmailTime > 3600:
                     if verbose:
-                        log.printWarn(f"{website} is down! Attempting to send email...")
+                        log.printWarn(f"{website} is not servings html! Attempting to send email...")
 
                     res = email.sendMail("Website Failure", f"{website} is unreachable!")
 
@@ -96,12 +107,12 @@ def monitor_websites():
                 
 
             elif verbose:
-                log.printWarn(f"{website} is down! Email notifications disabled.")
+                log.printWarn(f"{website} is not serving any content! Email notifications disabled.")
 
-        else:
+        elif wget != "":
             if verbose:
                 log.printInfo(f"{website} is up and serving content!")
-                
+
 
 
 print("Done! \n \n ")
@@ -118,7 +129,7 @@ if emailNotify:
 else:
     log.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
 
-    
+print()
 # Start the main loop
 while True:
     monitor_websites()
