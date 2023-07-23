@@ -86,13 +86,13 @@ def monitor_websites():
 
         # check if the website returned any html
         if (not re.search("<html", wget)) or wget == "":
-            
+
             if emailNotify:
                 if t.time() - lastEmailTime > 3600:
                     if verbose:
                         log.printWarn(f"{website} is not serving html! Attempting to send email...")
 
-                    res = email.sendMail("Website Failure", f"{website} is unreachable!")
+                    res = email.sendMail("Website Failure", f"{website} is not serving content!")
 
                     if res:
                         if verbose:
@@ -103,7 +103,7 @@ def monitor_websites():
                         log.printError("Email failed to send! Please check your email settings in cfg.ini")
 
                 elif verbose:
-                    log.printWarn("Email notifications are on cooldown!")
+                    log.printWarn("Website not serving content, but email notifications are on cooldown!")
                 
 
             elif verbose:
