@@ -17,8 +17,10 @@ print("                                                                         
 print("                                                                          '  _.'  |")
 print("                                                                          '-'/    \ ")
 print()
-print("Welcome to the Ping Monitor tool! Please make sure you are running the latest version of the tool from GitHub using the command 'git pull'")
+print("Welcome to the Ping Monitor tool! Please make sure you are running the latest version of the tool.")
+print()
 print("Initialising...")
+print()
 
 import os
 import platform
@@ -57,6 +59,7 @@ verbose = config['ui']['verbose'].lower() == "true"
 
 # Are we in GUI mode
 makeGraphs = config['ui']['graphs'].lower() == "true"
+
 
 if makeGraphs:
     # Set up the plot
@@ -175,6 +178,8 @@ if verbose:
 
 else:
     log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+
+
 
     
 if makeGraphs:
