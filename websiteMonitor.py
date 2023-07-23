@@ -81,7 +81,6 @@ def monitor_websites():
             wget = requests.get(website).text
         
         except:
-            log.printError(f"Failed to connect to {website}! Skipping...")
             wget = ""
 
         # check if the website returned any html
