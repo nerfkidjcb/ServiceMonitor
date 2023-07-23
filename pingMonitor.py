@@ -60,6 +60,8 @@ verbose = config['ui']['verbose'].lower() == "true"
 # Are we in GUI mode
 makeGraphs = config['ui']['graphs'].lower() == "true"
 
+# Is email enabled
+emailNotify = config['email']['email_notify'].lower() == "true"
 
 if makeGraphs:
     # Set up the plot
@@ -126,7 +128,7 @@ def animate(i):
             # Graph a 0 ping time to see drop outs
             ping_times[domain].append(str(0) + "|" + str(now))
 
-            if config['email']['email_notify'].lower() == "true": 
+            if emailNotify: 
 
                 if verbose:
                     log.printWarn(f"{domain} is down! Attempting to send email...")
@@ -179,7 +181,11 @@ if verbose:
 else:
     log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
 
+if emailNotify:
+    log.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
 
+else:
+    log.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
 
     
 if makeGraphs:
