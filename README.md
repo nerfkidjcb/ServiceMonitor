@@ -15,6 +15,7 @@ A repo for scripts that run on a local machine that will look out for systems of
 - `datetime`
 - `smtplib`
 - `configparser`
+- `requests`
 
 <br><br><br>
 ## Configuration and Setup
@@ -40,8 +41,8 @@ Using the `paramiko` library to ssh and run resource monitoring commands on a ho
 
 <br>
 
-### Script 3: `websiteMonitor.py` [LINUX]
-Using `wget`, will check that the configured domains/hosts are serving some html content. Similar to pingMonitor, but will check for a web page response, as opposed to a ping from the name server.
+### Script 3: `websiteMonitor.py` [FUNCTIONING]
+Using the `requests` library, this script will check that the configured domains/hosts are serving some html content. Similar to pingMonitor, but will check for a web page response, as opposed to a ping from the name server.
 
 <br><br>
 # Roadmap
