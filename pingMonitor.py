@@ -135,7 +135,11 @@ def animate(i):
 
                 if t.time() - lastEmailTime > 3600:
                     email.sendMail("Ping Failure", f"{domain} is unreachable!")
-                lastEmailTime = t.time()
+                    lastEmailTime = t.time()
+                
+                else:
+                    if verbose:
+                        log.printWarn("Email notifications are on cooldown!")
 
             else:
                 if verbose:
