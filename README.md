@@ -47,5 +47,6 @@ Using the `requests` library, this script will check that the configured domains
 <br><br>
 # Roadmap
 - Enable specification of intervals in `/cfg/cfg.ini`
+- Configure email notification for a service going back up after being flagged as down
 - Looking at monitoring the run queue of a host
 - Open to suggestions!
