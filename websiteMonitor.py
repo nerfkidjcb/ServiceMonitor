@@ -86,6 +86,7 @@ def monitor_websites():
 
         # check if the website returned any html
         if (not re.search("<html", wget)) or wget == "":
+            
             if emailNotify:
                 if t.time() - lastEmailTime > 3600:
                     if verbose:
@@ -103,7 +104,6 @@ def monitor_websites():
 
                 elif verbose:
                     log.printWarn("Email notifications are on cooldown!")
-
                 
 
             elif verbose:
