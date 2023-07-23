@@ -103,7 +103,7 @@ def monitor_websites():
                         log.printError("Email failed to send! Please check your email settings in cfg.ini")
 
                 elif verbose:
-                    log.printWarn("Website not serving content, but email notifications are on cooldown!")
+                    log.printWarn(f"{website} not serving content, but email notifications are on cooldown!")
                 
 
             elif verbose:
