@@ -63,6 +63,7 @@ lastEmailTime = 0
 
 
 def monitor_websites():  
+    global lastEmailTime
 
     for website in websites:
         # Remove any whitespace
