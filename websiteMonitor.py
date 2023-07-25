@@ -69,6 +69,8 @@ for i, website in enumerate(websites):
 
 # Keep track of the last time we sent an email per website
 lastEmailSites = {website: [] for website in websites}
+# Keep track of anything down, so we can notify if back up
+downSites = []
 
 
 def monitor_websites():  
@@ -88,6 +90,9 @@ def monitor_websites():
 
         # check if the website returned any html
         if (not re.search("<html", wget)) or wget == "":
+            
+            if not website in downSites:
+                downSites.append(website)
 
             if emailNotify:
                 if (lastEmailSites[website] == []) or (t.time() - lastEmailSites[website] > 3600):
@@ -114,6 +119,26 @@ def monitor_websites():
         elif wget != "":
             if verbose:
                 log.printInfo(f"{website} is up and serving content!")
+
+            if website in downSites:
+                downSites.remove(website)
+
+                if emailNotify:
+                    
+                    if verbose:
+                        log.printWarn(f"{website} is back up from before! Attempting to send email...")
+
+                    res = email.sendMail("Website Back Up", f"{website} is back up and serving content!")
+
+                    if res:
+                        if verbose:
+                            log.printInfo("Email sent successfully!")                        
+
+                    elif verbose:
+                        log.printError("Email failed to send! Please check your email settings in cfg.ini")                
+
+                elif verbose:
+                    log.printWarn(f"{website} is back up! Email notifications disabled.")
 
 
 
