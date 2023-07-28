@@ -1,5 +1,5 @@
 # Service Monitor - Version 1.2!
-A repo for scripts that run on a local machine that will look out for systems of your choosing.
+A repo for Python scripts that run on a local machine that look out for external systems.
 <br><br><br>
 
 ## Dependencies
