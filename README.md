@@ -15,7 +15,7 @@ A repo for scripts that run on a local machine that will look out for systems of
 - `datetime`
 - `smtplib`
 - `configparser`
-- `requests`
+- `requests` (Included in `requirements.txt` for MacOS builds of python)
 
 <br><br><br>
 ## Configuration and Setup
