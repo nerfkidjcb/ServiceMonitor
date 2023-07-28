@@ -1,5 +1,5 @@
 # Service Monitor - Version 1.2!
-A command line toolkit written in Python for looking out for external systems
+A command line toolkit written in Python for monitoring for external systems
 <br><br><br>
 
 ## Dependencies
