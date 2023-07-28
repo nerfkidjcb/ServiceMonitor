@@ -21,7 +21,7 @@ A repo for scripts that run on a local machine that will look out for systems of
 ## Configuration and Setup
 Take a look at `cfg/example_cfg.ini` and create your own `cfg.ini` file in the same directory with matching fields
 <br><br>
-Currently, you can choose a two custom options: <br>
+Currently, there are two options that change the behaiviour of the entire toolkit: <br>
 - `graphs`  Show graphical data <br>
 - `verbose`  Print data to console in real time with severity (recommended)<br><br>
 
