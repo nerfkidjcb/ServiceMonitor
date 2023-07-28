@@ -31,7 +31,7 @@ Other configuration options are commented in the example file.
 
 
 ## Scripts
-### Script 1: `monitorPing.py` [FUNCTIONING]
+### Script 1: `pingMonitor.py` [FUNCTIONING]
 Indefinitely pings domains/hosts within the `domains_list` in config and graphs the ping for each domain in real time. Upon a missing response, a notification email is sent. Emails, graphs and console outputs can be configured. 
 
 <br>
