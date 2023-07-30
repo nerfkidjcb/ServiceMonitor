@@ -99,9 +99,9 @@ def monitor_remote_usage(hostname, port, username, password):
     ram_output = stdout.read().decode()
     ram_total = ram_output
 
-    ram_usage = str(ram_used) + "/" + ram_total + " MB RAM"
+    ram_usage = str(round((ram_used / int(ram_total)) * 100, 2))
     
-    usage = str(cpu_usage) + " % CPU  |" + ram_usage
+    usage = str(cpu_usage) + "% CPU  | " + ram_usage + "% RAM"
 
     # Return CPU and RAM usage
     if verbose:
