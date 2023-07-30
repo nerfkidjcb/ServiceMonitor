@@ -65,7 +65,6 @@ for i, website in enumerate(websites):
     # If there's no http:// or https://, add https://
     if not re.search("http", websites[i]):
         websites[i] = f"https://{websites[i]}"
-        print(websites[i])
 
 # Keep track of the last time we sent an email per website
 lastEmailSites = {website: [] for website in websites}
