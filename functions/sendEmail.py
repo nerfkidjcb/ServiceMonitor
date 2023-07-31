@@ -6,17 +6,17 @@ class Mail:
 
   def __init__(self):      
     # Parse cfg.ini file
-    config = configparser.ConfigParser()
-    config.read('./cfg/cfg.ini')
+    self.config = configparser.ConfigParser()
+    self.config.read('./cfg/cfg.ini')
 
   # Function to email me with anything worth being notified
-  def sendMail(subject, body):
+  def sendMail(self, subject, body):
 
-    recipient = config['email']['email_to']
-    sender = config['email']['email_from']
-    password = config['email']['email_password']
+    recipient = self.config['email']['email_to']
+    sender = self.config['email']['email_from']
+    password = self.config['email']['email_password']
     message = f"Subject: {subject}\n\n{body}"
-    host= config['email']['email_host']
+    host= self.config['email']['email_host']
 
     try:
       server = smtplib.SMTP(host)
