@@ -132,7 +132,6 @@ def monitor_remote_usage(hostname, port, username, password):
         # Plot the data
         ax1.clear()
         ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
-        ax1.set_xlabel("Time")
         ax1.tick_params(axis="y", labelcolor="blue")
         ax1.xaxis.set_major_locator(locator)
         ax1.xaxis.set_major_formatter(formatter)
@@ -141,6 +140,8 @@ def monitor_remote_usage(hostname, port, username, password):
         # Plot the data on the second axes
         ax2.clear()
         ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
+        ax2.xaxis.set_major_locator(locator)
+        ax2.xaxis.set_major_formatter(formatter)
         ax2.legend(loc="upper right")
 
         # Set the x-axis label, y-axis label, and plot title
