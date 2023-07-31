@@ -2,7 +2,7 @@ import smtplib
 import configparser
 
 
-class Mail:
+class Mailer:
 
   def __init__(self):      
     # Parse cfg.ini file

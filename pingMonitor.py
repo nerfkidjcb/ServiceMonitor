@@ -35,11 +35,12 @@ import configparser
 # Include my own modules
 import sys
 sys.path.append('./functions/')
-import sendEmail as email
+from sendEmail import Mailer
 from functions import Utils
 # Include logging script
 from customLogging import CustomLogger
 
+email = Mailer()
 logger = CustomLogger()
 util = Utils()
 
