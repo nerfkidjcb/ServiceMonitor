@@ -7,7 +7,7 @@ class Utils:
 
     def __init__(self):        
         # Include my own modules
-        from customLogging import CustomLogger
+        from functions.customLogging import CustomLogger
         self.logger = CustomLogger()
 
     def checkCfg(self):

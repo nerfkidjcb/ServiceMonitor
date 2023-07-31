@@ -33,12 +33,10 @@ import matplotlib.dates as mdates
 import configparser
 
 # Include my own modules
-import sys
-sys.path.append('./functions/')
-from sendEmail import Mailer
-from functions import Utils
+from functions.sendEmail import Mailer
+from functions.functions import Utils
 # Include logging script
-from customLogging import CustomLogger
+from functions.customLogging import CustomLogger
 
 email = Mailer()
 logger = CustomLogger()

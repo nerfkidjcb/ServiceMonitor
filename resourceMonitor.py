@@ -29,10 +29,8 @@ import matplotlib.dates as mdates
 from datetime import datetime
 
 # Include my own modules
-import sys
-sys.path.append('./functions/')
-from customLogging import CustomLogger
-from functions import Utils
+from functions.customLogging import CustomLogger
+from functions.functions import Utils
 
 logger = CustomLogger()
 util = Utils()
