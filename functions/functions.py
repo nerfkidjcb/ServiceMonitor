@@ -5,13 +5,14 @@ import sys
 
 # Include my own modules
 sys.path.append('./functions/')
-import customLogging as log
+from customLogging import CustomLogger
+logger = CustomLogger()
 
 def checkCfg():
     """Check if the configuration file exists"""
     if not os.path.exists("./cfg/cfg.ini"):
-        log.printError("No cfg.ini file found, please create one from the example file in the cfg folder.")
-        log.printError("Aborting...")
+        logger.printError("No cfg.ini file found, please create one from the example file in the cfg folder.")
+        logger.printError("Aborting...")
         exit()
        
     return True

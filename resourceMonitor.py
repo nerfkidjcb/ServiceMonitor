@@ -31,9 +31,10 @@ from datetime import datetime
 # Include my own modules
 import sys
 sys.path.append('./functions/')
-import customLogging as log
+from customLogging import CustomLogger
 import functions as util
 
+logger = CustomLogger()
 util.checkCfg()
 
 # Parse cfg.ini file
@@ -64,7 +65,7 @@ def monitor_remote_usage(hostname, port, username, password):
 
     # Establish SSH connection
     if verbose:
-        log.printInfo("Attempting connection to host...")
+        logger.printInfo("Attempting connection to host...")
         
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -74,14 +75,14 @@ def monitor_remote_usage(hostname, port, username, password):
         
     except TimeoutError as e:
         
-        log.printError("Connection timed out: " + str(e))
-        log.printError("Aborting, please check your SSH credentials in cfg.ini and your host's configuration")
+        logger.printError("Connection timed out: " + str(e))
+        logger.printError("Aborting, please check your SSH credentials in cfg.ini and your host's configuration")
         exit()
         
 
     # Check if the connection was successful
     if ssh_client.get_transport().is_active() == False:
-        log.printError("SSH connection failed, please check your credentials in cfg.ini and your host's settings")
+        logger.printError("SSH connection failed, please check your credentials in cfg.ini and your host's settings")
         exit()
 
      # Execute the command remotely to get CPU usage
@@ -105,7 +106,7 @@ def monitor_remote_usage(hostname, port, username, password):
 
     # Return CPU and RAM usage
     if verbose:
-        log.printInfo(usage)
+        logger.printInfo(usage)
 
     # Close the SSH connection
     ssh_client.close()
@@ -169,20 +170,20 @@ if __name__ == '__main__':
     print("Done! \n \n")
 
     if verbose:
-        log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+        logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
 
     else :
-        log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+        logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
 
 
     if makeGraphs:
-        log.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+        logger.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
         print()
         ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
         plt.show()
 
     else:
-        log.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+        logger.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
         print()
         while True:
             monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)

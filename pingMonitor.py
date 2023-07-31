@@ -39,8 +39,9 @@ import sendEmail as email
 import functions as util
 
 # Include logging script
-import customLogging as log
+from customLogging import CustomLogger
 
+logger = CustomLogger()
 util.checkCfg()
 
 # Parse cfg.ini file
@@ -49,7 +50,7 @@ config.read('./cfg/cfg.ini')
 
 # check it was read correctly
 if config['domains']['domain_list'] == "":
-    log.printError("No domains found in cfg.ini")
+    logger.printError("No domains found in cfg.ini")
     exit()
 
 domains = config['domains']['domain_list'].split(",")
@@ -121,7 +122,7 @@ def animate(i):
             ping_times[domain].append(str(ping_time) + "|" + str(now))
 
             if verbose:
-                log.printInfo(f"{domain} is up! Average ping time: {ping_time} ms")
+                logger.printInfo(f"{domain} is up! Average ping time: {ping_time} ms")
 
         else: # If the ping failed there won't be an average time            
 
@@ -131,27 +132,27 @@ def animate(i):
             if emailNotify: 
 
                 if verbose:
-                    log.printWarn(f"{domain} is down! Attempting to send email...")
+                    logger.printWarn(f"{domain} is down! Attempting to send email...")
 
                 if t.time() - lastEmailTime > 3600:
                     res = email.sendMail("Ping Failure", f"{domain} is unreachable!")
                     
                     if res:
                         if verbose:
-                            log.printInfo("Email sent successfully!")
+                            logger.printInfo("Email sent successfully!")
                         lastEmailTime = t.time()
                     
                     elif verbose:
-                        log.printError("Email failed to send! Please check your email settings in cfg.ini")
+                        logger.printError("Email failed to send! Please check your email settings in cfg.ini")
 
                     
                 
                 elif verbose:
-                    log.printWarn("Email notifications are on cooldown!")
+                    logger.printWarn("Email notifications are on cooldown!")
 
             else:
                 if verbose:
-                    log.printWarn(f"{domain} is down! Email notifications disabled.")
+                    logger.printWarn(f"{domain} is down! Email notifications disabled.")
 
 
     # Append ping time to rolling list
@@ -188,26 +189,26 @@ def animate(i):
 print("Done! \n \n ")
 
 if verbose:
-    log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+    logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
 
 else:
-    log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+    logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
 
 if emailNotify:
-    log.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
+    logger.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
 
 else:
-    log.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
+    logger.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
 
     
 if makeGraphs:
-    log.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+    logger.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
     print()
     ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
     plt.show()
 
 else:
-    log.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+    logger.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
     print()
     while True:
         animate(0)

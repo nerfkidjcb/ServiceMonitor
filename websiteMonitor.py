@@ -37,8 +37,9 @@ import sendEmail as email
 import functions as util
 
 # Include logging script
-import customLogging as log
+from customLogging import CustomLogger
 
+logger = CustomLogger()
 util.checkCfg()
 
 # Parse cfg.ini file
@@ -47,7 +48,7 @@ config.read('./cfg/cfg.ini')
 
 # Check it was read correctly
 if config['websites']['website_list'] == "":
-    log.printError("No websites found in cfg.ini")
+    logger.printError("No websites found in cfg.ini")
     exit()
 
 websites = config['websites']['website_list'].split(",")
@@ -78,7 +79,7 @@ def monitor_websites():
     for website in websites:     
 
         if verbose:
-            log.printInfo(f"Checking {website}...")
+            logger.printInfo(f"Checking {website}...")
 
         # request the website
         try:
@@ -96,28 +97,28 @@ def monitor_websites():
             if emailNotify:
                 if (lastEmailSites[website] == []) or (t.time() - lastEmailSites[website] > 3600):
                     if verbose:
-                        log.printWarn(f"{website} is not serving html! Attempting to send email...")
+                        logger.printWarn(f"{website} is not serving html! Attempting to send email...")
 
                     res = email.sendMail("Website Failure", f"{website} is not serving content!")
 
                     if res:
                         if verbose:
-                            log.printInfo("Email sent successfully!")
+                            logger.printInfo("Email sent successfully!")
                         lastEmailSites[website] = t.time()
 
                     elif verbose:
-                        log.printError("Email failed to send! Please check your email settings in cfg.ini")
+                        logger.printError("Email failed to send! Please check your email settings in cfg.ini")
 
                 elif verbose:
-                    log.printWarn(f"{website} not serving content, and email notifications for it are on cooldown!")
+                    logger.printWarn(f"{website} not serving content, and email notifications for it are on cooldown!")
                 
 
             elif verbose:
-                log.printWarn(f"{website} is not serving any content! Email notifications disabled.")
+                logger.printWarn(f"{website} is not serving any content! Email notifications disabled.")
 
         elif wget != "":
             if verbose:
-                log.printInfo(f"{website} is up and serving content!")
+                logger.printInfo(f"{website} is up and serving content!")
 
             if website in downSites:
                 downSites.remove(website)
@@ -125,35 +126,35 @@ def monitor_websites():
                 if emailNotify:
                     
                     if verbose:
-                        log.printWarn(f"{website} is back up from before! Attempting to send email...")
+                        logger.printWarn(f"{website} is back up from before! Attempting to send email...")
 
                     res = email.sendMail("Website Back Up", f"{website} is back up and serving content!")
 
                     if res:
                         if verbose:
-                            log.printInfo("Email sent successfully!")                        
+                            logger.printInfo("Email sent successfully!")                        
 
                     elif verbose:
-                        log.printError("Email failed to send! Please check your email settings in cfg.ini")                
+                        logger.printError("Email failed to send! Please check your email settings in cfg.ini")                
 
                 elif verbose:
-                    log.printWarn(f"{website} is back up! Email notifications disabled.")
+                    logger.printWarn(f"{website} is back up! Email notifications disabled.")
 
 
 
 print("Done! \n \n ")
 
 if verbose:
-    log.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+    logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
 
 else:
-    log.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+    logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
 
 if emailNotify:
-    log.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
+    logger.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
 
 else:
-    log.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
+    logger.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
 
 print()
 # Start the main loop
