@@ -32,9 +32,11 @@ from datetime import datetime
 import sys
 sys.path.append('./functions/')
 from customLogging import CustomLogger
-import functions as util
+from functions import Utils
 
 logger = CustomLogger()
+util = Utils()
+
 util.checkCfg()
 
 # Parse cfg.ini file

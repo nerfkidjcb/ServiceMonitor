@@ -36,12 +36,13 @@ import configparser
 import sys
 sys.path.append('./functions/')
 import sendEmail as email
-import functions as util
-
+from functions import Utils
 # Include logging script
 from customLogging import CustomLogger
 
 logger = CustomLogger()
+util = Utils()
+
 util.checkCfg()
 
 # Parse cfg.ini file
