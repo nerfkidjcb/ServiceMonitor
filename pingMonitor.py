@@ -186,30 +186,31 @@ def animate(i):
         plt.xticks(rotation=45, ha='right')
 
 
-print("Done! \n \n ")
+if __name__ == "__main__":
+    print("Done! \n \n ")
 
-if verbose:
-    logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+    if verbose:
+        logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
 
-else:
-    logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+    else:
+        logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
 
-if emailNotify:
-    logger.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
+    if emailNotify:
+        logger.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
 
-else:
-    logger.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
+    else:
+        logger.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
 
-    
-if makeGraphs:
-    logger.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
-    print()
-    ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
-    plt.show()
+        
+    if makeGraphs:
+        logger.printInfo("Graphs enabled. Running in GUI mode... (Check cfg.ini to disable graphs)")
+        print()
+        ani = animation.FuncAnimation(fig, animate, interval=30000, cache_frame_data=False)
+        plt.show()
 
-else:
-    logger.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
-    print()
-    while True:
-        animate(0)
-        t.sleep(30)
+    else:
+        logger.printInfo("Graphs disabled. Running in CLI mode... (Check cfg.ini to enable graphs)")
+        print()
+        while True:
+            animate(0)
+            t.sleep(30)
