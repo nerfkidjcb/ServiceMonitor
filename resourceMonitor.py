@@ -58,6 +58,8 @@ cpu_usage_list = []
 ram_usage_list = []
 time_list = []
 
+
+
 def connect_to_host(hostname, port, username, password):
     # Establish SSH connection
     if verbose:
@@ -84,6 +86,7 @@ def connect_to_host(hostname, port, username, password):
     return ssh_client
 
 
+
 def read_usage(ssh_client):
     # Execute the command remotely to get CPU usage
     stdin, stdout, stderr = ssh_client.exec_command("top -bn1 | grep 'Cpu(s)'")
@@ -107,6 +110,35 @@ def read_usage(ssh_client):
     return string_usage, cpu_usage, ram_usage
 
 
+
+def update_graph():
+    # Set the x-axis locator and formatter
+    locator = mdates.MinuteLocator(interval=30)  # Display 30-minute intervals
+    formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
+
+    # Plot the data
+    ax1.clear()
+    ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
+    ax1.tick_params(axis="y", labelcolor="blue")
+    ax1.xaxis.set_major_locator(locator)
+    ax1.xaxis.set_major_formatter(formatter)
+    ax1.legend(loc="upper left")
+
+    # Plot the data on the second axes
+    ax2.clear()
+    ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
+    ax2.legend(loc="upper right")
+
+    # Set the x-axis label, y-axis label, and plot title
+    ax1.set_xlabel("Time")
+    ax1.set_ylabel("Resource Usage")
+    ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
+
+    # Rotate the x-axis labels for better readability
+    plt.xticks(rotation=45, ha='right')
+
+
+
 def monitor_remote_usage(hostname, port, username, password):
     now = datetime.now()
     now = now.strftime("%H:%M")
@@ -114,24 +146,24 @@ def monitor_remote_usage(hostname, port, username, password):
     ssh_client = connect_to_host(hostname, port, username, password)
 
     if ssh_client == False:
-        # Skip on
+        # Skip on, we don't want this to shut off if we cant connect once
         return
     
     usage, cpu_used, ram_used = read_usage(ssh_client)
+    ssh_client.close()
 
     # Return CPU and RAM usage
     if verbose:
-        logger.printInfo(usage)
-
-    # Close the SSH connection
-    ssh_client.close()
+        logger.printInfo(usage)    
 
     # Append the usage to a rolling list if the length is less than 288 (24 hours in 5 minute intervals)
     if len(cpu_usage_list) < 288:
         cpu_usage_list.append(cpu_used)
         ram_usage_list.append(ram_used)
         time_list.append(now)
+
     else:
+        # Clear out the first element
         cpu_usage_list.pop(0)
         ram_usage_list.pop(0)
         time_list.pop(0)
@@ -141,34 +173,13 @@ def monitor_remote_usage(hostname, port, username, password):
   
     
     if makeGraphs:
-        # Set the x-axis locator and formatter
-        locator = mdates.MinuteLocator(interval=30)  # Display 30-minute intervals
-        formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
+        update_graph()
 
-        # Plot the data
-        ax1.clear()
-        ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
-        ax1.tick_params(axis="y", labelcolor="blue")
-        ax1.xaxis.set_major_locator(locator)
-        ax1.xaxis.set_major_formatter(formatter)
-        ax1.legend(loc="upper left")
-
-        # Plot the data on the second axes
-        ax2.clear()
-        ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
-        ax2.legend(loc="upper right")
-
-        # Set the x-axis label, y-axis label, and plot title
-        ax1.set_xlabel("Time")
-        ax1.set_ylabel("Resource Usage")
-        ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
-
-        # Rotate the x-axis labels for better readability
-        plt.xticks(rotation=45, ha='right')
 
 
 def animate(i):
     monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
+
 
 
 if __name__ == '__main__':    
