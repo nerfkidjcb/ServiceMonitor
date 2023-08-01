@@ -84,16 +84,7 @@ def connect_to_host(hostname, port, username, password):
     return ssh_client
 
 
-def monitor_remote_usage(hostname, port, username, password):
-    now = datetime.now()
-    now = now.strftime("%H:%M")
-
-    ssh_client = connect_to_host(hostname, port, username, password)
-
-    if ssh_client == False:
-        # Skip on
-        return
-    
+def read_usage(ssh_client):
     # Execute the command remotely to get CPU usage
     stdin, stdout, stderr = ssh_client.exec_command("top -bn1 | grep 'Cpu(s)'")
     cpu_output = stdout.read().decode()
@@ -111,7 +102,22 @@ def monitor_remote_usage(hostname, port, username, password):
 
     ram_usage = str(round((ram_used / int(ram_total)) * 100, 2))
     
-    usage = str(cpu_usage) + "% CPU  | " + ram_usage + "% RAM"
+    string_usage = str(cpu_usage) + "% CPU  | " + ram_usage + "% RAM"
+
+    return string_usage, cpu_usage, ram_usage
+
+
+def monitor_remote_usage(hostname, port, username, password):
+    now = datetime.now()
+    now = now.strftime("%H:%M")
+
+    ssh_client = connect_to_host(hostname, port, username, password)
+
+    if ssh_client == False:
+        # Skip on
+        return
+    
+    usage, cpu_used, ram_used = read_usage(ssh_client)
 
     # Return CPU and RAM usage
     if verbose:
@@ -122,14 +128,14 @@ def monitor_remote_usage(hostname, port, username, password):
 
     # Append the usage to a rolling list if the length is less than 288 (24 hours in 5 minute intervals)
     if len(cpu_usage_list) < 288:
-        cpu_usage_list.append(cpu_usage)
+        cpu_usage_list.append(cpu_used)
         ram_usage_list.append(ram_used)
         time_list.append(now)
     else:
         cpu_usage_list.pop(0)
         ram_usage_list.pop(0)
         time_list.pop(0)
-        cpu_usage_list.append(cpu_usage)
+        cpu_usage_list.append(cpu_used)
         ram_usage_list.append(ram_used)
         time_list.append(now)
   
