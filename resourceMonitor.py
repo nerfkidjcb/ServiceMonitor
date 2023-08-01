@@ -32,37 +32,8 @@ from datetime import datetime
 from functions.customLogging import CustomLogger
 from functions.functions import Utils
 
-logger = CustomLogger()
-util = Utils()
 
-util.checkCfg()
-
-# Parse cfg.ini file
-config = configparser.ConfigParser()
-config.read('./cfg/cfg.ini')
-
-# Are we in verbose mode
-verbose = config['ui']['verbose'].lower() == "true"
-
-# Are we in GUI mode
-makeGraphs = config['ui']['graphs'].lower() == "true"
-
-if makeGraphs:
-    # Set up the plot
-    fig = plt.figure()
-    ax1 = fig.add_subplot(1, 1, 1)
-    # Create a twin axes
-    ax2 = ax1.twinx()
-
-cpu_usage_list = []
-ram_usage_list = []
-time_list = []
-
-
-def monitor_remote_usage(hostname, port, username, password):
-    now = datetime.now()
-    now = now.strftime("%H:%M")
-
+def connect_to_host(hostname, port, username, password):
     # Establish SSH connection
     if verbose:
         logger.printInfo("Attempting connection to host...")
@@ -77,15 +48,20 @@ def monitor_remote_usage(hostname, port, username, password):
         
         logger.printError("Connection timed out: " + str(e))
         logger.printError("Aborting, please check your SSH credentials in cfg.ini and your host's configuration")
-        exit()
+        return False
         
 
     # Check if the connection was successful
     if ssh_client.get_transport().is_active() == False:
         logger.printError("SSH connection failed, please check your credentials in cfg.ini and your host's settings")
-        exit()
+        return False
+    
+    return ssh_client
 
-     # Execute the command remotely to get CPU usage
+
+
+def read_usage(ssh_client):
+    # Execute the command remotely to get CPU usage
     stdin, stdout, stderr = ssh_client.exec_command("top -bn1 | grep 'Cpu(s)'")
     cpu_output = stdout.read().decode()
     cpu_usage = float(cpu_output.split()[1])
@@ -102,62 +78,108 @@ def monitor_remote_usage(hostname, port, username, password):
 
     ram_usage = str(round((ram_used / int(ram_total)) * 100, 2))
     
-    usage = str(cpu_usage) + "% CPU  | " + ram_usage + "% RAM"
+    string_usage = str(cpu_usage) + "% CPU  | " + ram_usage + "% RAM"
+
+    return string_usage, cpu_usage, ram_usage
+
+
+
+def update_graph():
+    # Set the x-axis locator and formatter
+    locator = mdates.MinuteLocator(interval=30)  # Display 30-minute intervals
+    formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
+
+    # Plot the data
+    ax1.clear()
+    ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
+    ax1.tick_params(axis="y", labelcolor="blue")
+    ax1.xaxis.set_major_locator(locator)
+    ax1.xaxis.set_major_formatter(formatter)
+    ax1.legend(loc="upper left")
+
+    # Plot the data on the second axes
+    ax2.clear()
+    ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
+    ax2.legend(loc="upper right")
+
+    # Set the x-axis label, y-axis label, and plot title
+    ax1.set_xlabel("Time")
+    ax1.set_ylabel("Resource Usage")
+    ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
+
+    # Rotate the x-axis labels for better readability
+    plt.xticks(rotation=45, ha='right')
+
+
+
+def monitor_remote_usage(hostname, port, username, password):
+    now = datetime.now()
+    now = now.strftime("%H:%M")
+
+    ssh_client = connect_to_host(hostname, port, username, password)
+
+    if ssh_client == False:
+        # Skip on, we don't want this to shut off if we cant connect once
+        return
+    
+    usage, cpu_used, ram_used = read_usage(ssh_client)
+    ssh_client.close()
 
     # Return CPU and RAM usage
     if verbose:
-        logger.printInfo(usage)
-
-    # Close the SSH connection
-    ssh_client.close()
+        logger.printInfo(usage)    
 
     # Append the usage to a rolling list if the length is less than 288 (24 hours in 5 minute intervals)
     if len(cpu_usage_list) < 288:
-        cpu_usage_list.append(cpu_usage)
+        cpu_usage_list.append(cpu_used)
         ram_usage_list.append(ram_used)
         time_list.append(now)
+
     else:
+        # Clear out the first element
         cpu_usage_list.pop(0)
         ram_usage_list.pop(0)
         time_list.pop(0)
-        cpu_usage_list.append(cpu_usage)
+        cpu_usage_list.append(cpu_used)
         ram_usage_list.append(ram_used)
         time_list.append(now)
   
     
-    if makeGraphs:
-        # Set the x-axis locator and formatter
-        locator = mdates.MinuteLocator(interval=30)  # Display 30-minute intervals
-        formatter = mdates.DateFormatter('%H:%M')  # Format the x-axis labels as HH:MM
-
-        # Plot the data
-        ax1.clear()
-        ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
-        ax1.tick_params(axis="y", labelcolor="blue")
-        ax1.xaxis.set_major_locator(locator)
-        ax1.xaxis.set_major_formatter(formatter)
-        ax1.legend(loc="upper left")
-
-        # Plot the data on the second axes
-        ax2.clear()
-        ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
-        ax2.legend(loc="upper right")
-
-        # Set the x-axis label, y-axis label, and plot title
-        ax1.set_xlabel("Time")
-        ax1.set_ylabel("Resource Usage")
-        ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
-
-        # Rotate the x-axis labels for better readability
-        plt.xticks(rotation=45, ha='right')
-
 
 def animate(i):
     monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
+    update_graph()
+
 
 
 if __name__ == '__main__':    
-    
+
+    logger = CustomLogger()
+    util = Utils()
+
+    util.checkCfg()
+
+    # Parse cfg.ini file
+    config = configparser.ConfigParser()
+    config.read('./cfg/cfg.ini')
+
+    # Are we in verbose mode
+    verbose = config['ui']['verbose'].lower() == "true"
+
+    # Are we in GUI mode
+    makeGraphs = config['ui']['graphs'].lower() == "true"
+
+    if makeGraphs:
+        # Set up the plot
+        fig = plt.figure()
+        ax1 = fig.add_subplot(1, 1, 1)
+        # Create a twin axes
+        ax2 = ax1.twinx()
+
+    cpu_usage_list = []
+    ram_usage_list = []
+    time_list = []
+
     remote_address = config['ssh']['ssh_address']
     remote_username = config['ssh']['ssh_username']
     remote_password = config['ssh']['ssh_password']
