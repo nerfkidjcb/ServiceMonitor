@@ -26,7 +26,6 @@ print()
 import re
 import requests
 import time as t
-from datetime import datetime
 import configparser
 
 # Include my own modules
