@@ -58,11 +58,7 @@ cpu_usage_list = []
 ram_usage_list = []
 time_list = []
 
-
-def monitor_remote_usage(hostname, port, username, password):
-    now = datetime.now()
-    now = now.strftime("%H:%M")
-
+def connect_to_host(hostname, port, username, password):
     # Establish SSH connection
     if verbose:
         logger.printInfo("Attempting connection to host...")
@@ -77,15 +73,28 @@ def monitor_remote_usage(hostname, port, username, password):
         
         logger.printError("Connection timed out: " + str(e))
         logger.printError("Aborting, please check your SSH credentials in cfg.ini and your host's configuration")
-        exit()
+        return False
         
 
     # Check if the connection was successful
     if ssh_client.get_transport().is_active() == False:
         logger.printError("SSH connection failed, please check your credentials in cfg.ini and your host's settings")
-        exit()
+        return False
+    
+    return ssh_client
 
-     # Execute the command remotely to get CPU usage
+
+def monitor_remote_usage(hostname, port, username, password):
+    now = datetime.now()
+    now = now.strftime("%H:%M")
+
+    ssh_client = connect_to_host(hostname, port, username, password)
+
+    if ssh_client == False:
+        # Skip on
+        return
+    
+    # Execute the command remotely to get CPU usage
     stdin, stdout, stderr = ssh_client.exec_command("top -bn1 | grep 'Cpu(s)'")
     cpu_output = stdout.read().decode()
     cpu_usage = float(cpu_output.split()[1])
