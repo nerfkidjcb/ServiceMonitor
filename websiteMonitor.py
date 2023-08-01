@@ -33,62 +33,25 @@ import configparser
 # Include my own modules
 from functions.sendEmail import Mailer
 from functions.functions import Utils
-# Include logging script
 from functions.customLogging import CustomLogger
-
-email = Mailer()
-logger = CustomLogger()
-util = Utils()
-
-util.checkCfg()
-
-# Parse cfg.ini file
-config = configparser.ConfigParser()
-config.read('./cfg/cfg.ini')
-
-# Check it was read correctly
-if config['websites']['website_list'] == "":
-    logger.printError("No websites found in cfg.ini")
-    exit()
-
-websites = config['websites']['website_list'].split(",")
-
-# Are we in verbose mode
-verbose = config['ui']['verbose'].lower() == "true"
-
-# Is email enabled
-emailNotify = config['email']['email_notify'].lower() == "true"
-
-# Remove any whitespace and update the list elements
-for i, website in enumerate(websites):
-    websites[i] = website.strip()
-
-    # If there's no http:// or https://, add https://
-    if not re.search("http", websites[i]):
-        websites[i] = f"https://{websites[i]}"
-
-# Keep track of the last time we sent an email per website
-lastEmailSites = {website: [] for website in websites}
-# Keep track of anything down, so we can notify if back up
-downSites = []
 
 
 def monitor_websites():  
-    global lastEmailTime
 
     for website in websites:     
 
         if verbose:
             logger.printInfo(f"Checking {website}...")
 
-        # request the website
         try:
             wget = requests.get(website).text
         
-        except:
+        except Exception as e:
             wget = ""
+            if verbose:
+                logger.printError(f"Failed to get {website}! Error: {e}")
 
-        # check if the website returned any html
+        # Check if the website returned any html
         if (not re.search("<html", wget)) or wget == "":
             
             if not website in downSites:
@@ -142,22 +105,59 @@ def monitor_websites():
 
 
 
-print("Done! \n \n ")
+if __name__ == "__main__":
+    email = Mailer()
+    logger = CustomLogger()
+    util = Utils()
 
-if verbose:
-    logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+    util.checkCfg()
 
-else:
-    logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+    # Parse cfg.ini file
+    config = configparser.ConfigParser()
+    config.read('./cfg/cfg.ini')
 
-if emailNotify:
-    logger.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
+    # Check it was read correctly
+    if config['websites']['website_list'] == "":
+        logger.printError("No websites found in cfg.ini")
+        exit()
 
-else:
-    logger.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
+    websites = config['websites']['website_list'].split(",")
 
-print()
-# Start the main loop
-while True:
-    monitor_websites()
-    t.sleep(60)
+    # Are we in verbose mode
+    verbose = config['ui']['verbose'].lower() == "true"
+
+    # Is email enabled
+    emailNotify = config['email']['email_notify'].lower() == "true"
+
+    # Remove any whitespace and update the list elements
+    for i, website in enumerate(websites):
+        websites[i] = website.strip()
+
+        # If there's no http:// or https://, add https://
+        if not re.search("http", websites[i]):
+            websites[i] = f"https://{websites[i]}"
+
+    # Keep track of the last time we sent an email per website
+    lastEmailSites = {website: [] for website in websites}
+    # Keep track of anything down, so we can notify if back up
+    downSites = []
+
+    print("Done! \n \n ")
+
+    if verbose:
+        logger.printInfo("Verbose mode enabled. Running in verbose mode... (Check cfg.ini to disable verbose mode)")
+
+    else:
+        logger.printInfo("Verbose mode disabled. Running in quiet mode... (Check cfg.ini to enable verbose mode)")
+
+    if emailNotify:
+        logger.printInfo("Email notifications enabled. Running in email mode... (Check cfg.ini to disable email notifications)")
+
+    else:
+        logger.printInfo("Email notifications disabled. Running without them... (Check cfg.ini to enable email notifications)")
+
+    print()
+    # Start the main loop
+    while True:
+        monitor_websites()
+        t.sleep(60)
