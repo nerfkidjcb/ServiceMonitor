@@ -48,11 +48,6 @@ util.checkCfg()
 config = configparser.ConfigParser()
 config.read('./cfg/cfg.ini')
 
-# check it was read correctly
-if config['domains']['domain_list'] == "":
-    logger.printError("No domains found in cfg.ini")
-    exit()
-
 domains = config['domains']['domain_list'].split(",")
 
 # Are we in verbose mode
