@@ -1,7 +1,6 @@
 # Utils for the project
 
 import os 
-import sys
 
 class Utils:
 
