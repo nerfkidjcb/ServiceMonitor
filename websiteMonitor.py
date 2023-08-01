@@ -22,8 +22,7 @@ print()
 print("Initialising...")
 print()
 
-import os
-import platform
+
 import re
 import requests
 import time as t
@@ -106,6 +105,7 @@ def monitor_websites():
 
 
 if __name__ == "__main__":
+
     email = Mailer()
     logger = CustomLogger()
     util = Utils()
