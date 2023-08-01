@@ -32,33 +32,6 @@ from datetime import datetime
 from functions.customLogging import CustomLogger
 from functions.functions import Utils
 
-logger = CustomLogger()
-util = Utils()
-
-util.checkCfg()
-
-# Parse cfg.ini file
-config = configparser.ConfigParser()
-config.read('./cfg/cfg.ini')
-
-# Are we in verbose mode
-verbose = config['ui']['verbose'].lower() == "true"
-
-# Are we in GUI mode
-makeGraphs = config['ui']['graphs'].lower() == "true"
-
-if makeGraphs:
-    # Set up the plot
-    fig = plt.figure()
-    ax1 = fig.add_subplot(1, 1, 1)
-    # Create a twin axes
-    ax2 = ax1.twinx()
-
-cpu_usage_list = []
-ram_usage_list = []
-time_list = []
-
-
 
 def connect_to_host(hostname, port, username, password):
     # Establish SSH connection
@@ -172,18 +145,41 @@ def monitor_remote_usage(hostname, port, username, password):
         time_list.append(now)
   
     
-    if makeGraphs:
-        update_graph()
-
-
 
 def animate(i):
     monitor_remote_usage(remote_hostname, remote_port, remote_username, remote_password)
+    update_graph()
 
 
 
 if __name__ == '__main__':    
-    
+
+    logger = CustomLogger()
+    util = Utils()
+
+    util.checkCfg()
+
+    # Parse cfg.ini file
+    config = configparser.ConfigParser()
+    config.read('./cfg/cfg.ini')
+
+    # Are we in verbose mode
+    verbose = config['ui']['verbose'].lower() == "true"
+
+    # Are we in GUI mode
+    makeGraphs = config['ui']['graphs'].lower() == "true"
+
+    if makeGraphs:
+        # Set up the plot
+        fig = plt.figure()
+        ax1 = fig.add_subplot(1, 1, 1)
+        # Create a twin axes
+        ax2 = ax1.twinx()
+
+    cpu_usage_list = []
+    ram_usage_list = []
+    time_list = []
+
     remote_address = config['ssh']['ssh_address']
     remote_username = config['ssh']['ssh_username']
     remote_password = config['ssh']['ssh_password']
