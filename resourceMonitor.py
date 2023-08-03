@@ -99,7 +99,7 @@ def update_graph():
 
     # Plot the data on the second axes
     ax2.clear()
-    ax2.plot(time_list, ram_usage_list, label="RAM Usage (MB)", color="green")
+    ax2.plot(time_list, ram_usage_list, label="RAM Usage (%)", color="green")
     ax2.legend(loc="upper right")
 
     # Set the x-axis label, y-axis label, and plot title
