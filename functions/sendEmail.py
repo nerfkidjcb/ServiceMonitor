@@ -16,17 +16,16 @@ class Mailer:
     sender = self.config['email']['email_from']
     password = self.config['email']['email_password']
     message = f"Subject: {subject}\n\n{body}"
-    host= self.config['email']['email_host']
+    host = self.config['email']['email_host']
+    port = self.config['email']['email_port']
 
     try:
-      server = smtplib.SMTP(host)
-      server.ehlo()
-      server.starttls()
+      server = smtplib.SMTP_SSL(host, port)
       server.login(sender, password)
       server.sendmail(sender, recipient, message)
       server.close()
       return True
     
-    except:
+    except Exception as e:
       return False
 
