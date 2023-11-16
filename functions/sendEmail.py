@@ -1,7 +1,6 @@
 import smtplib
 import configparser
 
-
 class Mailer:
 
   def __init__(self):      
@@ -27,5 +26,5 @@ class Mailer:
       return True
     
     except Exception as e:
-      return False
+      return e
 

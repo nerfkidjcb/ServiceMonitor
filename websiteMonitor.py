@@ -91,12 +91,12 @@ def monitor_websites():
 
                     res = email.sendMail("Website Back Up", f"{website} is back up and serving content!")
 
-                    if res:
+                    if res == True:
                         if verbose:
                             logger.printInfo("Email sent successfully!")                        
 
                     elif verbose:
-                        logger.printError("Email failed to send! Please check your email settings in cfg.ini")                
+                        logger.printError("Email failed to send! Please check your email settings in cfg.ini. \n Error: \n {res}")                
 
                 elif verbose:
                     logger.printWarn(f"{website} is back up! Email notifications disabled.")
