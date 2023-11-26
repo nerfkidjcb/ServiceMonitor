@@ -211,4 +211,4 @@ if __name__ == "__main__":
         print()
         while True:
             monitor_ping()
-            t.sleep(30)
+            t.sleep(60)
