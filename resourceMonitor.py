@@ -91,7 +91,7 @@ def update_graph():
 
     # Plot the data
     ax1.clear()
-    ax1.plot(time_list, cpu_usage_list, label="CPU Usage (%)", color="blue")
+    ax1.plot(time_list, cpu_usage_list, label="CPU Usage", color="blue")
     ax1.tick_params(axis="y", labelcolor="blue")
     ax1.xaxis.set_major_locator(locator)
     ax1.xaxis.set_major_formatter(formatter)
@@ -99,13 +99,18 @@ def update_graph():
 
     # Plot the data on the second axes
     ax2.clear()
-    ax2.plot(time_list, ram_usage_list, label="RAM Usage (%)", color="green")
+    ax2.plot(time_list, ram_usage_list, label="RAM Usage", color="green")
     ax2.legend(loc="upper right")
+    ax2.tick_params(axis="y", labelcolor="green")
 
     # Set the x-axis label, y-axis label, and plot title
     ax1.set_xlabel("Time")
-    ax1.set_ylabel("Resource Usage")
+    ax1.set_ylabel("Resource Usage (%)")
     ax1.set_title("Resource Usage Monitor for " + config['ssh']['host_nickname'])
+
+    # Set the limits of the y-axis
+    ax1.set_ylim(0, 100)
+    
 
     # Rotate the x-axis labels for better readability
     plt.xticks(rotation=45, ha='right')
@@ -173,8 +178,10 @@ if __name__ == '__main__':
         # Set up the plot
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 1, 1)
+
         # Create a twin axes
         ax2 = ax1.twinx()
+        
 
     cpu_usage_list = []
     ram_usage_list = []
