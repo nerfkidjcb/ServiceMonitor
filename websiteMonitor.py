@@ -53,36 +53,42 @@ def monitor_websites():
         if (not re.search("<html", wget)) or wget == "":
             
             if not website in downSites:
-                downSites.append(website)
+                downSites[website] = t.time()
 
-            if emailNotify:
-                if (lastEmailSites[website] == []) or (t.time() - lastEmailSites[website] > 3600):
-                    if verbose:
-                        logger.printWarn(f"{website} is not serving html! Attempting to send email...")
+            # Only send mail if it has been 2 minutes of downtime
+            if len(downSites) > 1:
+                if (t.time() - downSites[website] > 120):
+                    downSites[website] = t.time()
 
-                    res = email.sendMail("Website Failure", f"{website} is not serving content!")
 
-                    if res:
-                        if verbose:
-                            logger.printInfo("Email sent successfully!")
-                        lastEmailSites[website] = t.time()
+                    if emailNotify:
+                        if (lastEmailSites[website] == []) or (t.time() - lastEmailSites[website] > 3600):
+                            if verbose:
+                                logger.printWarn(f"{website} is not serving html! Attempting to send email...")
+
+                            res = email.sendMail("Website Failure", f"{website} is not serving content!")
+
+                            if res:
+                                if verbose:
+                                    logger.printInfo("Email sent successfully!")
+                                lastEmailSites[website] = t.time()
+
+                            elif verbose:
+                                logger.printError("Email failed to send! Please check your email settings in cfg.ini")
+
+                        elif verbose:
+                            logger.printWarn(f"{website} not serving content, and email notifications for it are on cooldown!")
+                        
 
                     elif verbose:
-                        logger.printError("Email failed to send! Please check your email settings in cfg.ini")
-
-                elif verbose:
-                    logger.printWarn(f"{website} not serving content, and email notifications for it are on cooldown!")
-                
-
-            elif verbose:
-                logger.printWarn(f"{website} is not serving any content! Email notifications disabled.")
+                        logger.printWarn(f"{website} is not serving any content! Email notifications disabled.")
 
         elif wget != "":
             if verbose:
                 logger.printInfo(f"{website} is up and serving content!")
 
             if website in downSites:
-                downSites.remove(website)
+                downSites[website] = None
 
                 if emailNotify:
                     
@@ -139,7 +145,7 @@ if __name__ == "__main__":
     # Keep track of the last time we sent an email per website
     lastEmailSites = {website: [] for website in websites}
     # Keep track of anything down, so we can notify if back up
-    downSites = []
+    downSites = {}
 
     print("Done! \n \n ")
 
